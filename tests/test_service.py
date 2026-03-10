@@ -73,3 +73,13 @@ def test_rating_bounds_are_enforced() -> None:
     snapshot = service.snapshot()
     assert snapshot.ratings["a"] <= 1510
     assert snapshot.ratings["b"] >= 1490
+
+
+def test_constructor_rejects_base_rating_outside_bounds() -> None:
+    with pytest.raises(ValidationError, match=">= min_rating"):
+        RatingsService(base_rating=1400, min_rating=1450)
+
+
+def test_constructor_rejects_non_finite_bounds() -> None:
+    with pytest.raises(ValidationError, match="finite"):
+        RatingsService(base_rating=1500, max_rating=float("inf"))

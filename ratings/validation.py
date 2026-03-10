@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from math import isfinite
 
 from ratings.exceptions import ValidationError
 from ratings.models import MatchResult
@@ -22,6 +23,8 @@ def validate_match(match: MatchResult) -> None:
         raise ValidationError("winner_id and loser_id must be different")
     if not isinstance(match.weight, (int, float)):
         raise ValidationError("weight must be numeric")
+    if not isfinite(float(match.weight)):
+        raise ValidationError("weight must be finite")
     if match.weight <= 0:
         raise ValidationError("weight must be positive")
     if not isinstance(match.is_draw, bool):
@@ -30,3 +33,11 @@ def validate_match(match: MatchResult) -> None:
         raise ValidationError("occurred_at must be a datetime")
     if match.occurred_at.tzinfo is None or match.occurred_at.utcoffset() is None:
         raise ValidationError("occurred_at must be timezone-aware")
+
+
+def validate_numeric(value: float, field_name: str) -> None:
+    """Validate numeric float-like fields for finite values."""
+    if not isinstance(value, (int, float)):
+        raise ValidationError(f"{field_name} must be numeric")
+    if not isfinite(float(value)):
+        raise ValidationError(f"{field_name} must be finite")

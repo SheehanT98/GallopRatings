@@ -1,4 +1,7 @@
+import pytest
+
 from ratings.engine import EloEngine
+from ratings.exceptions import ValidationError
 from ratings.models import MatchResult
 
 
@@ -31,3 +34,13 @@ def test_expected_score_extreme_gap_is_stable() -> None:
     high_vs_low = engine.expected_score(50000, -50000)
     assert low_vs_high < 1e-200
     assert high_vs_low > 1 - 1e-12
+
+
+def test_engine_rejects_invalid_k_factor() -> None:
+    with pytest.raises(ValidationError, match="positive"):
+        EloEngine(k_factor=0)
+
+
+def test_engine_rejects_non_finite_scale() -> None:
+    with pytest.raises(ValidationError, match="finite"):
+        EloEngine(scale=float("nan"))

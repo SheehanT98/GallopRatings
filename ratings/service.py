@@ -7,7 +7,7 @@ from copy import deepcopy
 from ratings.engine import EloEngine
 from ratings.exceptions import UnknownCompetitorError, ValidationError
 from ratings.models import MatchResult, RatingChange, RatingsSnapshot
-from ratings.validation import validate_competitor_id, validate_match
+from ratings.validation import validate_competitor_id, validate_match, validate_numeric
 
 
 class RatingsService:
@@ -21,6 +21,11 @@ class RatingsService:
         max_rating: float | None = None,
         engine: EloEngine | None = None,
     ) -> None:
+        validate_numeric(base_rating, "base_rating")
+        if min_rating is not None:
+            validate_numeric(min_rating, "min_rating")
+        if max_rating is not None:
+            validate_numeric(max_rating, "max_rating")
         if min_rating is not None and max_rating is not None and min_rating > max_rating:
             raise ValidationError("min_rating must be <= max_rating")
         if min_rating is not None and base_rating < min_rating:

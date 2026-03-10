@@ -3,7 +3,9 @@ from __future__ import annotations
 from functools import lru_cache
 from math import exp, log
 
+from ratings.exceptions import ValidationError
 from ratings.models import MatchResult, RatingChange
+from ratings.validation import validate_numeric
 
 _LN_10 = log(10)
 
@@ -23,10 +25,12 @@ class EloEngine:
     """Deterministic Elo-based rating update engine."""
 
     def __init__(self, *, k_factor: float = 32.0, scale: float = 400.0) -> None:
+        validate_numeric(k_factor, "k_factor")
+        validate_numeric(scale, "scale")
         if k_factor <= 0:
-            raise ValueError("k_factor must be positive")
+            raise ValidationError("k_factor must be positive")
         if scale <= 0:
-            raise ValueError("scale must be positive")
+            raise ValidationError("scale must be positive")
         self.k_factor = float(k_factor)
         self.scale = float(scale)
 

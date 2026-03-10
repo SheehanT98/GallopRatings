@@ -20,3 +20,7 @@ service = RatingsService()
 service.process_match(MatchResult(winner_id="horse_a", loser_id="horse_b"))
 print(service.snapshot().ratings)
 ```
+
+## Documentation
+
+- Detailed formula, validation, and migration notes: `docs/RATINGS.md`

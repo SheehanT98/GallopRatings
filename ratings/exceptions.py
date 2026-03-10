@@ -8,3 +8,7 @@ class ValidationError(RatingsError):
 
 class UnknownCompetitorError(RatingsError):
     """Raised when a requested competitor does not exist."""
+
+
+class SerializationError(RatingsError):
+    """Raised when serialized payloads cannot be parsed safely."""
