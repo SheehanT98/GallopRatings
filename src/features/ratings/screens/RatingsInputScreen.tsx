@@ -22,10 +22,12 @@ import {
   useHorsesQuery,
 } from '@/features/ratings/hooks/useRatingsQueries';
 import type { AuthorName, RatingValue } from '@/features/ratings/types/domain';
+import { useResponsiveLayout } from '@/lib/responsive/useResponsiveLayout';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RatingsInput'>;
 
 export const RatingsInputScreen = ({ navigation, route }: Props) => {
+  const { isDesktop } = useResponsiveLayout();
   const [horseSearch, setHorseSearch] = React.useState('');
   const [selectedHorseId, setSelectedHorseId] = React.useState<string | undefined>(route.params?.horseId);
   const [authorName, setAuthorName] = React.useState<AuthorName>('MV');
@@ -64,94 +66,106 @@ export const RatingsInputScreen = ({ navigation, route }: Props) => {
 
   return (
     <ScreenContainer>
-      <SectionCard>
-        <Text className="mb-2 text-lg font-semibold text-slate-900">Horse Selection</Text>
-        <Field
-          label="Search horse"
-          value={horseSearch}
-          onChangeText={setHorseSearch}
-          placeholder="Type horse name..."
-        />
-        <FlatList
-          data={horsesQuery.data ?? []}
-          horizontal
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={{ gap: 8, marginTop: 12 }}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => setSelectedHorseId(item.id)}
-              className={`rounded-full px-3 py-2 ${
-                selectedHorseId === item.id ? 'bg-brand-600' : 'bg-slate-200'
-              }`}
-            >
-              <Text className={selectedHorseId === item.id ? 'text-white' : 'text-slate-700'}>
-                {item.name}
-              </Text>
-            </Pressable>
-          )}
-        />
-      </SectionCard>
+      <View style={{ flexDirection: isDesktop ? 'row' : 'column', gap: 12, alignItems: 'flex-start' }}>
+        <View style={{ flex: 1, width: '100%', gap: 12 }}>
+          <SectionCard>
+            <Text className="mb-2 text-lg font-semibold text-slate-900">Horse Selection</Text>
+            <Field
+              label="Search horse"
+              value={horseSearch}
+              onChangeText={setHorseSearch}
+              placeholder="Type horse name..."
+            />
+            <FlatList
+              data={horsesQuery.data ?? []}
+              horizontal
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={{ gap: 8, marginTop: 12 }}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() => setSelectedHorseId(item.id)}
+                  className={`rounded-full px-3 py-2 ${
+                    selectedHorseId === item.id ? 'bg-brand-600' : 'bg-slate-200'
+                  }`}
+                >
+                  <Text className={selectedHorseId === item.id ? 'text-white' : 'text-slate-700'}>
+                    {item.name}
+                  </Text>
+                </Pressable>
+              )}
+            />
+          </SectionCard>
 
-      {horseQuery.data ? <HorseSummaryCard horse={horseQuery.data} /> : null}
+          {horseQuery.data ? <HorseSummaryCard horse={horseQuery.data} /> : null}
+        </View>
 
-      <SectionCard>
-        <Text className="mb-2 text-lg font-semibold text-slate-900">New Rating</Text>
-        <OptionChips label="Rating" options={RATING_OPTIONS} selected={rating} onSelect={setRating} />
-        <View className="mt-3">
-          <OptionChips
-            label="Author"
-            options={AUTHOR_OPTIONS}
-            selected={authorName}
-            onSelect={setAuthorName}
-          />
+        <View style={{ flex: 1, width: '100%' }}>
+          <SectionCard>
+            <Text className="mb-2 text-lg font-semibold text-slate-900">New Rating</Text>
+            <OptionChips label="Rating" options={RATING_OPTIONS} selected={rating} onSelect={setRating} />
+            <View className="mt-3">
+              <OptionChips
+                label="Author"
+                options={AUTHOR_OPTIONS}
+                selected={authorName}
+                onSelect={setAuthorName}
+              />
+            </View>
+            <View className="mt-3">
+              <OptionChips
+                label="Stallion Recommendation"
+                options={STALLION_OPTIONS}
+                selected={stallionRecommendation || undefined}
+                onSelect={setStallionRecommendation}
+              />
+            </View>
+            <View className="mt-3">
+              <Field
+                label="Note"
+                value={note}
+                onChangeText={setNote}
+                placeholder="Add note..."
+                multiline
+              />
+            </View>
+            {error ? <Text className="mt-2 text-sm text-red-600">{error}</Text> : null}
+            <View className="mt-3">
+              <PrimaryButton
+                label={createMutation.isPending ? 'Saving...' : 'Save Rating'}
+                disabled={createMutation.isPending}
+                onPress={onSubmit}
+              />
+            </View>
+          </SectionCard>
         </View>
-        <View className="mt-3">
-          <OptionChips
-            label="Stallion Recommendation"
-            options={STALLION_OPTIONS}
-            selected={stallionRecommendation || undefined}
-            onSelect={setStallionRecommendation}
-          />
-        </View>
-        <View className="mt-3">
-          <Field
-            label="Note"
-            value={note}
-            onChangeText={setNote}
-            placeholder="Add note..."
-            multiline
-          />
-        </View>
-        {error ? <Text className="mt-2 text-sm text-red-600">{error}</Text> : null}
-        <View className="mt-3">
-          <PrimaryButton
-            label={createMutation.isPending ? 'Saving...' : 'Save Rating'}
-            disabled={createMutation.isPending}
-            onPress={onSubmit}
-          />
-        </View>
-      </SectionCard>
+      </View>
 
       <SectionCard>
         <Text className="mb-2 text-lg font-semibold text-slate-900">Rating History</Text>
-        <View className="gap-3">
-          {(ratingsQuery.data ?? []).map((item) => (
-            <RatingListItem
-              key={item.id}
-              item={item}
-              onPress={() =>
-                navigation.navigate('RatingsEdit', {
-                  horseId: item.horseId,
-                  ratingId: item.id,
-                })
-              }
-            />
-          ))}
-          {!ratingsQuery.data?.length ? (
-            <Text className="text-slate-500">No ratings yet for selected horse.</Text>
-          ) : null}
-        </View>
+        <FlatList
+          data={ratingsQuery.data ?? []}
+          key={isDesktop ? 'desktop-history-grid' : 'mobile-history-list'}
+          keyExtractor={(item) => item.id}
+          numColumns={isDesktop ? 2 : 1}
+          scrollEnabled={false}
+          columnWrapperStyle={isDesktop ? { gap: 10 } : undefined}
+          ItemSeparatorComponent={() => <View className="h-3" />}
+          renderItem={({ item }) => (
+            <View style={{ flex: 1 }}>
+              <RatingListItem
+                item={item}
+                onPress={() =>
+                  navigation.navigate('RatingsEdit', {
+                    horseId: item.horseId,
+                    ratingId: item.id,
+                  })
+                }
+              />
+            </View>
+          )}
+          ListEmptyComponent={<Text className="text-slate-500">No ratings yet for selected horse.</Text>}
+        />
       </SectionCard>
     </ScreenContainer>
   );

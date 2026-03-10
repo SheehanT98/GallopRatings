@@ -39,6 +39,12 @@ src/
    - Memoized filter object creation
    - React Query stale-time usage
    - Memoized list item components for high-churn lists
+   - FlatList-based rendering for history/staged/result lists
+
+6. **Responsive-first layout**  
+   - Centralized breakpoint logic via `useResponsiveLayout`
+   - Centered constrained content widths for web/desktop
+   - Desktop two-column layouts for major screens while preserving mobile-first flow
 
 ## Migrated flows
 

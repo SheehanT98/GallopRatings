@@ -1,6 +1,6 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
-import { Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
 
 import type { RootStackParamList } from '@/app/navigation/types';
 import { Field } from '@/components/ui/Field';
@@ -21,10 +21,12 @@ import {
   useUpdateRatingMutation,
 } from '@/features/ratings/hooks/useRatingsQueries';
 import type { AuthorName, RatingValue } from '@/features/ratings/types/domain';
+import { useResponsiveLayout } from '@/lib/responsive/useResponsiveLayout';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RatingsEdit'>;
 
 export const RatingsEditScreen = ({ route }: Props) => {
+  const { isDesktop } = useResponsiveLayout();
   const { horseId, ratingId } = route.params;
   const [authorName, setAuthorName] = React.useState<AuthorName>('MV');
   const [rating, setRating] = React.useState<RatingValue>('7+');
@@ -87,53 +89,68 @@ export const RatingsEditScreen = ({ route }: Props) => {
 
   return (
     <ScreenContainer>
-      {horseQuery.data ? <HorseSummaryCard horse={horseQuery.data} /> : null}
+      <View style={{ flexDirection: isDesktop ? 'row' : 'column', gap: 12, alignItems: 'flex-start' }}>
+        <View style={{ flex: 1, width: '100%' }}>
+          {horseQuery.data ? <HorseSummaryCard horse={horseQuery.data} /> : null}
+        </View>
 
-      <SectionCard>
-        <Text className="mb-2 text-lg font-semibold text-slate-900">Edit Rating</Text>
-        <OptionChips label="Rating" options={RATING_OPTIONS} selected={rating} onSelect={setRating} />
-        <View className="mt-3">
-          <OptionChips
-            label="Author"
-            options={AUTHOR_OPTIONS}
-            selected={authorName}
-            onSelect={setAuthorName}
-          />
+        <View style={{ flex: 1, width: '100%' }}>
+          <SectionCard>
+            <Text className="mb-2 text-lg font-semibold text-slate-900">Edit Rating</Text>
+            <OptionChips label="Rating" options={RATING_OPTIONS} selected={rating} onSelect={setRating} />
+            <View className="mt-3">
+              <OptionChips
+                label="Author"
+                options={AUTHOR_OPTIONS}
+                selected={authorName}
+                onSelect={setAuthorName}
+              />
+            </View>
+            <View className="mt-3">
+              <OptionChips
+                label="Stallion Recommendation"
+                options={STALLION_OPTIONS}
+                selected={stallionRecommendation || undefined}
+                onSelect={setStallionRecommendation}
+              />
+            </View>
+            <View className="mt-3">
+              <Field
+                label="Note"
+                value={note}
+                onChangeText={setNote}
+                placeholder="Update note..."
+                multiline
+              />
+            </View>
+            {error ? <Text className="mt-2 text-sm text-red-600">{error}</Text> : null}
+            <View className="mt-3">
+              <PrimaryButton
+                label={updateMutation.isPending ? 'Updating...' : 'Update Rating'}
+                onPress={onSave}
+                disabled={updateMutation.isPending}
+              />
+            </View>
+          </SectionCard>
         </View>
-        <View className="mt-3">
-          <OptionChips
-            label="Stallion Recommendation"
-            options={STALLION_OPTIONS}
-            selected={stallionRecommendation || undefined}
-            onSelect={setStallionRecommendation}
-          />
-        </View>
-        <View className="mt-3">
-          <Field
-            label="Note"
-            value={note}
-            onChangeText={setNote}
-            placeholder="Update note..."
-            multiline
-          />
-        </View>
-        {error ? <Text className="mt-2 text-sm text-red-600">{error}</Text> : null}
-        <View className="mt-3">
-          <PrimaryButton
-            label={updateMutation.isPending ? 'Updating...' : 'Update Rating'}
-            onPress={onSave}
-            disabled={updateMutation.isPending}
-          />
-        </View>
-      </SectionCard>
+      </View>
 
       <SectionCard>
         <Text className="mb-2 text-lg font-semibold text-slate-900">Horse History</Text>
-        <View className="gap-3">
-          {(ratingsQuery.data ?? []).map((item) => (
-            <RatingListItem key={item.id} item={item} />
-          ))}
-        </View>
+        <FlatList
+          data={ratingsQuery.data ?? []}
+          key={isDesktop ? 'desktop-history-grid' : 'mobile-history-list'}
+          keyExtractor={(item) => item.id}
+          numColumns={isDesktop ? 2 : 1}
+          scrollEnabled={false}
+          columnWrapperStyle={isDesktop ? { gap: 10 } : undefined}
+          ItemSeparatorComponent={() => <View className="h-3" />}
+          renderItem={({ item }) => (
+            <View style={{ flex: 1 }}>
+              <RatingListItem item={item} />
+            </View>
+          )}
+        />
       </SectionCard>
     </ScreenContainer>
   );
