@@ -1,8 +1,22 @@
 from __future__ import annotations
 
 from functools import lru_cache
+from math import exp, log
 
 from ratings.models import MatchResult, RatingChange
+
+_LN_10 = log(10)
+
+
+@lru_cache(maxsize=50_000)
+def _expected_score_cached(rating_a: float, rating_b: float, scale: float) -> float:
+    """Compute expected score with a module-level bounded cache."""
+    scaled_diff = ((rating_b - rating_a) / scale) * _LN_10
+    if scaled_diff >= 700:
+        return 0.0
+    if scaled_diff <= -700:
+        return 1.0
+    return 1.0 / (1.0 + exp(scaled_diff))
 
 
 class EloEngine:
@@ -16,12 +30,17 @@ class EloEngine:
         self.k_factor = float(k_factor)
         self.scale = float(scale)
 
-    @lru_cache(maxsize=50_000)
     def expected_score(self, rating_a: float, rating_b: float) -> float:
         """Expected score for competitor A vs B."""
-        return 1.0 / (1.0 + 10 ** ((rating_b - rating_a) / self.scale))
+        return _expected_score_cached(rating_a, rating_b, self.scale)
 
-    def rate(self, *, rating_winner: float, rating_loser: float, match: MatchResult) -> RatingChange:
+    def rate(
+        self,
+        *,
+        rating_winner: float,
+        rating_loser: float,
+        match: MatchResult,
+    ) -> RatingChange:
         """
         Calculate updated ratings for a single match.
 

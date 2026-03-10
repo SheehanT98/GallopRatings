@@ -28,3 +28,14 @@ def test_validate_match_accepts_valid_payload() -> None:
         occurred_at=datetime.now(timezone.utc),
     )
     validate_match(match)
+
+
+def test_validate_match_rejects_naive_datetime() -> None:
+    aware_now = datetime.now(timezone.utc)
+    match = MatchResult(
+        winner_id="winner",
+        loser_id="loser",
+        occurred_at=aware_now.replace(tzinfo=None),
+    )
+    with pytest.raises(ValidationError, match="timezone-aware"):
+        validate_match(match)

@@ -12,9 +12,24 @@ authors = [{ name = "Gallop Ratings" }]
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0.0"]
+dev = ["mypy>=1.10.0", "pytest>=8.0.0", "ruff>=0.6.0"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+exclude = ["tests/"]

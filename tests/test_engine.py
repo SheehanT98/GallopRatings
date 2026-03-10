@@ -23,3 +23,11 @@ def test_draw_results_in_smaller_shift_for_favorite() -> None:
     change = engine.rate(rating_winner=1700, rating_loser=1300, match=draw)
     assert change.new_a < change.old_a
     assert change.new_b > change.old_b
+
+
+def test_expected_score_extreme_gap_is_stable() -> None:
+    engine = EloEngine()
+    low_vs_high = engine.expected_score(-50000, 50000)
+    high_vs_low = engine.expected_score(50000, -50000)
+    assert low_vs_high < 1e-200
+    assert high_vs_low > 1 - 1e-12

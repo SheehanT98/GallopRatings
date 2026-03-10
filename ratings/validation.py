@@ -24,5 +24,9 @@ def validate_match(match: MatchResult) -> None:
         raise ValidationError("weight must be numeric")
     if match.weight <= 0:
         raise ValidationError("weight must be positive")
+    if not isinstance(match.is_draw, bool):
+        raise ValidationError("is_draw must be a boolean")
     if not isinstance(match.occurred_at, datetime):
         raise ValidationError("occurred_at must be a datetime")
+    if match.occurred_at.tzinfo is None or match.occurred_at.utcoffset() is None:
+        raise ValidationError("occurred_at must be timezone-aware")
