@@ -76,7 +76,8 @@ class RatingsInputModel extends FlutterFlowModel<RatingsInputWidget> {
   }
 
   /// Additional helper methods.
-  Future waitForRequestCompleted1({
+  Future _waitForCompleter(
+    Completer<dynamic>? completer, {
     double minWait = 0,
     double maxWait = double.infinity,
   }) async {
@@ -84,70 +85,60 @@ class RatingsInputModel extends FlutterFlowModel<RatingsInputWidget> {
     while (true) {
       await Future.delayed(Duration(milliseconds: 50));
       final timeElapsed = stopwatch.elapsedMilliseconds;
-      final requestComplete = requestCompleter1?.isCompleted ?? false;
+      final requestComplete = completer?.isCompleted ?? false;
       if (timeElapsed > maxWait || (requestComplete && timeElapsed > minWait)) {
         break;
       }
     }
   }
+
+  Future waitForRequestCompleted1({
+    double minWait = 0,
+    double maxWait = double.infinity,
+  }) async =>
+      _waitForCompleter(
+        requestCompleter1,
+        minWait: minWait,
+        maxWait: maxWait,
+      );
 
   Future waitForRequestCompleted3({
     double minWait = 0,
     double maxWait = double.infinity,
-  }) async {
-    final stopwatch = Stopwatch()..start();
-    while (true) {
-      await Future.delayed(Duration(milliseconds: 50));
-      final timeElapsed = stopwatch.elapsedMilliseconds;
-      final requestComplete = requestCompleter3?.isCompleted ?? false;
-      if (timeElapsed > maxWait || (requestComplete && timeElapsed > minWait)) {
-        break;
-      }
-    }
-  }
+  }) async =>
+      _waitForCompleter(
+        requestCompleter3,
+        minWait: minWait,
+        maxWait: maxWait,
+      );
 
   Future waitForRequestCompleted4({
     double minWait = 0,
     double maxWait = double.infinity,
-  }) async {
-    final stopwatch = Stopwatch()..start();
-    while (true) {
-      await Future.delayed(Duration(milliseconds: 50));
-      final timeElapsed = stopwatch.elapsedMilliseconds;
-      final requestComplete = requestCompleter4?.isCompleted ?? false;
-      if (timeElapsed > maxWait || (requestComplete && timeElapsed > minWait)) {
-        break;
-      }
-    }
-  }
+  }) async =>
+      _waitForCompleter(
+        requestCompleter4,
+        minWait: minWait,
+        maxWait: maxWait,
+      );
 
   Future waitForRequestCompleted5({
     double minWait = 0,
     double maxWait = double.infinity,
-  }) async {
-    final stopwatch = Stopwatch()..start();
-    while (true) {
-      await Future.delayed(Duration(milliseconds: 50));
-      final timeElapsed = stopwatch.elapsedMilliseconds;
-      final requestComplete = requestCompleter5?.isCompleted ?? false;
-      if (timeElapsed > maxWait || (requestComplete && timeElapsed > minWait)) {
-        break;
-      }
-    }
-  }
+  }) async =>
+      _waitForCompleter(
+        requestCompleter5,
+        minWait: minWait,
+        maxWait: maxWait,
+      );
 
   Future waitForRequestCompleted2({
     double minWait = 0,
     double maxWait = double.infinity,
-  }) async {
-    final stopwatch = Stopwatch()..start();
-    while (true) {
-      await Future.delayed(Duration(milliseconds: 50));
-      final timeElapsed = stopwatch.elapsedMilliseconds;
-      final requestComplete = requestCompleter2?.isCompleted ?? false;
-      if (timeElapsed > maxWait || (requestComplete && timeElapsed > minWait)) {
-        break;
-      }
-    }
-  }
+  }) async =>
+      _waitForCompleter(
+        requestCompleter2,
+        minWait: minWait,
+        maxWait: maxWait,
+      );
 }

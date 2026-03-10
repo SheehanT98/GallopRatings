@@ -26,6 +26,21 @@ class _RatingsReportingPageWidgetState
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String _displayText(String? value, {String fallback = '-'}) {
+    final trimmed = value?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return fallback;
+    }
+    return trimmed;
+  }
+
+  String _displayDate(DateTime? value, {String format = 'd/M/y'}) {
+    if (value == null) {
+      return '-';
+    }
+    return dateTimeFormat(format, value);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -302,7 +317,7 @@ class _RatingsReportingPageWidgetState
                                                                                 ],
                                                                               ),
                                                                               Text(
-                                                                                listViewRatingsInputsTemporaryRow.authorName!,
+                                                                                _displayText(listViewRatingsInputsTemporaryRow.authorName),
                                                                                 style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                       fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
                                                                                       fontSize: 16.0,
@@ -311,7 +326,7 @@ class _RatingsReportingPageWidgetState
                                                                                     ),
                                                                               ),
                                                                               Text(
-                                                                                dateTimeFormat("d/M/y", listViewRatingsInputsTemporaryRow.noteDate!),
+                                                                                _displayDate(listViewRatingsInputsTemporaryRow.noteDate),
                                                                                 style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                       fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
                                                                                       fontSize: 16.0,
@@ -335,7 +350,7 @@ class _RatingsReportingPageWidgetState
                                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                                 children: [
                                                                                   Text(
-                                                                                    listViewRatingsInputsTemporaryRow.rating!,
+                                                                                    _displayText(listViewRatingsInputsTemporaryRow.rating),
                                                                                     style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                           fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
                                                                                           fontSize: 18.0,

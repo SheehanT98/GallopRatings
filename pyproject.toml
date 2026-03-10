@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gallop-ratings"
+version = "0.1.0"
+description = "Deterministic, validated ratings engine for head-to-head results."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Gallop Ratings" }]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["mypy>=1.10.0", "pytest>=8.0.0", "ruff>=0.6.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+check_untyped_defs = true
+exclude = ["tests/"]
