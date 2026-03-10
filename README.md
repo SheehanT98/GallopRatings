@@ -27,6 +27,18 @@ npm run typecheck
 npm test
 ```
 
+### Build static web bundle (for Vercel)
+```bash
+npm run build:web
+```
+Output is generated in `dist/`.
+
+Vercel is configured via `vercel.json` to:
+- run `npm run build:web`
+- publish `dist/`
+
+If Vercel serves raw `index.js` source, it usually means the project was deployed without the web export build step/output directory.
+
 ### Optional Supabase configuration
 If these env vars are set, the app uses Supabase repository; otherwise it falls back to in-memory repository:
 - `EXPO_PUBLIC_SUPABASE_URL`
