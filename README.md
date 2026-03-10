@@ -1,27 +1,45 @@
-# Gallop Ratings
+# Gallop Ratings App
 
-Improved ratings module with:
+This repository now contains:
 
-- Deterministic Elo engine
-- Numerically stable expected-score calculations for extreme rating gaps
-- Input validation with typed domain errors
-- Stateful service layer for batch updates
-- Atomic batch processing with rollback safety (default)
-- Optional rating floor/ceiling bounds
-- Deterministic leaderboard output (rating desc, id asc)
-- Snapshot and serialization helpers
-- Focused unit tests for correctness and edge cases
+1. A **React Native + Expo + TypeScript** ratings app (feature-first architecture),
+2. NativeWind/Tailwind styling system,
+3. Existing Python ratings module (retained for compatibility and tests).
 
-## Quick usage
+## React Native App (Expo)
 
-```python
-from ratings import MatchResult, RatingsService
+### Tech stack
+- Expo + React Native + TypeScript
+- NativeWind + TailwindCSS
+- React Navigation
+- React Query data layer
+- Jest + React Native Testing Library
 
-service = RatingsService()
-service.process_match(MatchResult(winner_id="horse_a", loser_id="horse_b"))
-print(service.snapshot().ratings)
+### Run
+```bash
+npm install
+npm run start
 ```
 
-## Documentation
+### Validate
+```bash
+npm run typecheck
+npm test
+```
 
-- Detailed formula, validation, and migration notes: `docs/RATINGS.md`
+### Optional Supabase configuration
+If these env vars are set, the app uses Supabase repository; otherwise it falls back to in-memory repository:
+- `EXPO_PUBLIC_SUPABASE_URL`
+- `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+
+## Python Ratings Module
+
+The previous Python ratings engine remains available under `ratings/`.
+
+Run tests:
+```bash
+python3 -m pytest
+```
+
+Additional docs:
+- `docs/RATINGS.md`
