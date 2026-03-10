@@ -26,6 +26,7 @@ Implementation details:
 
 - `process_many(..., sort_by_time=True)` provides deterministic chronological processing.
 - `leaderboard()` is deterministic with tie-breaker `(rating desc, competitor_id asc)`.
+- `process_many(..., atomic=True)` is default and rolls back full-batch changes on any failure.
 
 ## Validation behavior
 
@@ -42,6 +43,8 @@ Validated fields include:
 If integrating from older ad-hoc rating logic:
 
 1. Replace direct dict math with `RatingsService.process_match` / `process_many`.
+   - Keep default `atomic=True` for all-or-nothing batch safety.
+   - Use `atomic=False` only when partial progress is explicitly desired.
 2. Ensure timestamps are timezone-aware.
 3. If old system had implicit rating floor/ceiling, configure `min_rating`/`max_rating`.
 4. For serialization, use:

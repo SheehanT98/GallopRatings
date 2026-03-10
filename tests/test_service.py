@@ -75,6 +75,31 @@ def test_rating_bounds_are_enforced() -> None:
     assert snapshot.ratings["b"] >= 1490
 
 
+def test_process_many_atomic_rolls_back_on_error() -> None:
+    service = RatingsService()
+    valid = MatchResult(winner_id="a", loser_id="b")
+    invalid = MatchResult(winner_id="x", loser_id="x")
+
+    with pytest.raises(ValidationError, match="must be different"):
+        service.process_many([valid, invalid], atomic=True)
+
+    assert service.snapshot().ratings == {}
+    assert service.history() == ()
+
+
+def test_process_many_non_atomic_keeps_partial_progress() -> None:
+    service = RatingsService()
+    valid = MatchResult(winner_id="a", loser_id="b")
+    invalid = MatchResult(winner_id="x", loser_id="x")
+
+    with pytest.raises(ValidationError, match="must be different"):
+        service.process_many([valid, invalid], atomic=False)
+
+    snapshot = service.snapshot()
+    assert set(snapshot.ratings) == {"a", "b"}
+    assert snapshot.processed_matches == 1
+
+
 def test_constructor_rejects_base_rating_outside_bounds() -> None:
     with pytest.raises(ValidationError, match=">= min_rating"):
         RatingsService(base_rating=1400, min_rating=1450)

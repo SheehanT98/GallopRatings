@@ -6,6 +6,7 @@ Improved ratings module with:
 - Numerically stable expected-score calculations for extreme rating gaps
 - Input validation with typed domain errors
 - Stateful service layer for batch updates
+- Atomic batch processing with rollback safety (default)
 - Optional rating floor/ceiling bounds
 - Deterministic leaderboard output (rating desc, id asc)
 - Snapshot and serialization helpers

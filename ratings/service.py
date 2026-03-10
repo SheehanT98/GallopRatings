@@ -74,11 +74,29 @@ class RatingsService:
         matches: Iterable[MatchResult],
         *,
         sort_by_time: bool = False,
+        atomic: bool = True,
     ) -> list[RatingChange]:
-        """Process an ordered iterable of matches."""
+        """
+        Process an iterable of matches.
+
+        By default this operation is atomic: if any match fails validation or
+        processing, all changes from this batch are rolled back.
+        """
+        batch = list(matches)
         if sort_by_time:
-            matches = sorted(matches, key=lambda m: (m.occurred_at, m.winner_id, m.loser_id))
-        return [self.process_match(match) for match in matches]
+            batch = sorted(batch, key=lambda m: (m.occurred_at, m.winner_id, m.loser_id))
+
+        if not atomic:
+            return [self.process_match(match) for match in batch]
+
+        checkpoint_ratings = dict(self._ratings)
+        checkpoint_history_len = len(self._history)
+        try:
+            return [self.process_match(match) for match in batch]
+        except Exception:
+            self._ratings = defaultdict(lambda: self.base_rating, checkpoint_ratings)
+            del self._history[checkpoint_history_len:]
+            raise
 
     def get_rating(self, competitor_id: str) -> float:
         """Return current rating for a competitor."""
