@@ -1,5 +1,6 @@
 from ratings.engine import EloEngine
 from ratings.exceptions import (
+    BatchProcessingError,
     RatingsError,
     SerializationError,
     UnknownCompetitorError,
@@ -17,6 +18,7 @@ from ratings.service import RatingsService
 
 __all__ = [
     "EloEngine",
+    "BatchProcessingError",
     "MatchResult",
     "RatingChange",
     "RatingsError",

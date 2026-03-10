@@ -12,3 +12,7 @@ class UnknownCompetitorError(RatingsError):
 
 class SerializationError(RatingsError):
     """Raised when serialized payloads cannot be parsed safely."""
+
+
+class BatchProcessingError(RatingsError):
+    """Raised when batch processing fails for any item."""

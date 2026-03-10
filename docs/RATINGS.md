@@ -27,6 +27,7 @@ Implementation details:
 - `process_many(..., sort_by_time=True)` provides deterministic chronological processing.
 - `leaderboard()` is deterministic with tie-breaker `(rating desc, competitor_id asc)`.
 - `process_many(..., atomic=True)` is default and rolls back full-batch changes on any failure.
+- Batch failures raise `BatchProcessingError` with index and competitor context; root cause is chained.
 
 ## Validation behavior
 

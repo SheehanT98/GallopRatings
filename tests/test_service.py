@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from ratings import MatchResult, RatingsService
-from ratings.exceptions import UnknownCompetitorError, ValidationError
+from ratings.exceptions import BatchProcessingError, UnknownCompetitorError, ValidationError
 
 
 def test_process_many_is_deterministic() -> None:
@@ -80,11 +80,15 @@ def test_process_many_atomic_rolls_back_on_error() -> None:
     valid = MatchResult(winner_id="a", loser_id="b")
     invalid = MatchResult(winner_id="x", loser_id="x")
 
-    with pytest.raises(ValidationError, match="must be different"):
+    with pytest.raises(
+        BatchProcessingError,
+        match="rolled back atomic batch at index=1",
+    ) as exc_info:
         service.process_many([valid, invalid], atomic=True)
 
     assert service.snapshot().ratings == {}
     assert service.history() == ()
+    assert isinstance(exc_info.value.__cause__, ValidationError)
 
 
 def test_process_many_non_atomic_keeps_partial_progress() -> None:
@@ -92,12 +96,13 @@ def test_process_many_non_atomic_keeps_partial_progress() -> None:
     valid = MatchResult(winner_id="a", loser_id="b")
     invalid = MatchResult(winner_id="x", loser_id="x")
 
-    with pytest.raises(ValidationError, match="must be different"):
+    with pytest.raises(BatchProcessingError, match="failed at index=1") as exc_info:
         service.process_many([valid, invalid], atomic=False)
 
     snapshot = service.snapshot()
     assert set(snapshot.ratings) == {"a", "b"}
     assert snapshot.processed_matches == 1
+    assert isinstance(exc_info.value.__cause__, ValidationError)
 
 
 def test_constructor_rejects_base_rating_outside_bounds() -> None:

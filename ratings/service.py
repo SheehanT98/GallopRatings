@@ -5,7 +5,7 @@ from collections.abc import Iterable
 from copy import deepcopy
 
 from ratings.engine import EloEngine
-from ratings.exceptions import UnknownCompetitorError, ValidationError
+from ratings.exceptions import BatchProcessingError, UnknownCompetitorError, ValidationError
 from ratings.models import MatchResult, RatingChange, RatingsSnapshot
 from ratings.validation import validate_competitor_id, validate_match, validate_numeric
 
@@ -87,16 +87,31 @@ class RatingsService:
             batch = sorted(batch, key=lambda m: (m.occurred_at, m.winner_id, m.loser_id))
 
         if not atomic:
-            return [self.process_match(match) for match in batch]
+            partial_changes: list[RatingChange] = []
+            for index, match in enumerate(batch):
+                try:
+                    partial_changes.append(self.process_match(match))
+                except Exception as exc:
+                    raise BatchProcessingError(
+                        "RatingsService.process_many failed at "
+                        f"index={index} (winner={match.winner_id}, loser={match.loser_id})"
+                    ) from exc
+            return partial_changes
 
         checkpoint_ratings = dict(self._ratings)
         checkpoint_history_len = len(self._history)
-        try:
-            return [self.process_match(match) for match in batch]
-        except Exception:
-            self._ratings = defaultdict(lambda: self.base_rating, checkpoint_ratings)
-            del self._history[checkpoint_history_len:]
-            raise
+        changes: list[RatingChange] = []
+        for index, match in enumerate(batch):
+            try:
+                changes.append(self.process_match(match))
+            except Exception as exc:
+                self._ratings = defaultdict(lambda: self.base_rating, checkpoint_ratings)
+                del self._history[checkpoint_history_len:]
+                raise BatchProcessingError(
+                    "RatingsService.process_many rolled back atomic batch at "
+                    f"index={index} (winner={match.winner_id}, loser={match.loser_id})"
+                ) from exc
+        return changes
 
     def get_rating(self, competitor_id: str) -> float:
         """Return current rating for a competitor."""
