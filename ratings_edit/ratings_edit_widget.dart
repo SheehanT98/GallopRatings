@@ -35,6 +35,14 @@ class _RatingsEditWidgetState extends State<RatingsEditWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String _displayText(String? value, {String fallback = '-'}) {
+    final trimmed = value?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return fallback;
+    }
+    return trimmed;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -290,8 +298,10 @@ class _RatingsEditWidgetState extends State<RatingsEditWidget> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    infoContainerMobileHorsesRow!
-                                                        .name!,
+                                                    _displayText(
+                                                      infoContainerMobileHorsesRow
+                                                          ?.name,
+                                                    ),
                                                     style: FlutterFlowTheme.of(
                                                             context)
                                                         .bodyMedium
@@ -1604,8 +1614,10 @@ class _RatingsEditWidgetState extends State<RatingsEditWidget> {
                                                             .start,
                                                     children: [
                                                       Text(
-                                                        infoContainerTabletHorsesRow!
-                                                            .name!,
+                                                        _displayText(
+                                                          infoContainerTabletHorsesRow
+                                                              ?.name,
+                                                        ),
                                                         style: FlutterFlowTheme
                                                                 .of(context)
                                                             .bodyMedium

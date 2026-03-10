@@ -29,6 +29,21 @@ class _RatingsReportsWidgetState extends State<RatingsReportsWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String _displayText(String? value, {String fallback = '-'}) {
+    final trimmed = value?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return fallback;
+    }
+    return trimmed;
+  }
+
+  String _displayDate(DateTime? value, {String format = 'd/M/y'}) {
+    if (value == null) {
+      return '-';
+    }
+    return dateTimeFormat(format, value);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -1044,8 +1059,10 @@ class _RatingsReportsWidgetState extends State<RatingsReportsWidget> {
                                                                 ),
                                                           ),
                                                           Text(
-                                                            listViewReportsorigRatingsInputsRow
-                                                                .authorName!,
+                                                            _displayText(
+                                                              listViewReportsorigRatingsInputsRow
+                                                                  .authorName,
+                                                            ),
                                                             style: FlutterFlowTheme
                                                                     .of(context)
                                                                 .bodyMedium
@@ -1062,10 +1079,10 @@ class _RatingsReportsWidgetState extends State<RatingsReportsWidget> {
                                                                 ),
                                                           ),
                                                           Text(
-                                                            dateTimeFormat(
-                                                                "d/M/y",
-                                                                listViewReportsorigRatingsInputsRow
-                                                                    .noteDate!),
+                                                            _displayDate(
+                                                              listViewReportsorigRatingsInputsRow
+                                                                  .noteDate,
+                                                            ),
                                                             style: FlutterFlowTheme
                                                                     .of(context)
                                                                 .bodyMedium
@@ -1100,8 +1117,10 @@ class _RatingsReportsWidgetState extends State<RatingsReportsWidget> {
                                                                 .start,
                                                         children: [
                                                           Text(
-                                                            listViewReportsorigRatingsInputsRow
-                                                                .rating!,
+                                                            _displayText(
+                                                              listViewReportsorigRatingsInputsRow
+                                                                  .rating,
+                                                            ),
                                                             style: FlutterFlowTheme
                                                                     .of(context)
                                                                 .bodyMedium

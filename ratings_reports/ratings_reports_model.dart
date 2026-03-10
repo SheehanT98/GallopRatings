@@ -45,7 +45,8 @@ class RatingsReportsModel extends FlutterFlowModel<RatingsReportsWidget> {
   }
 
   /// Additional helper methods.
-  Future waitForRequestCompleted2({
+  Future _waitForCompleter(
+    Completer<dynamic>? completer, {
     double minWait = 0,
     double maxWait = double.infinity,
   }) async {
@@ -53,25 +54,30 @@ class RatingsReportsModel extends FlutterFlowModel<RatingsReportsWidget> {
     while (true) {
       await Future.delayed(Duration(milliseconds: 50));
       final timeElapsed = stopwatch.elapsedMilliseconds;
-      final requestComplete = requestCompleter2?.isCompleted ?? false;
+      final requestComplete = completer?.isCompleted ?? false;
       if (timeElapsed > maxWait || (requestComplete && timeElapsed > minWait)) {
         break;
       }
     }
   }
 
+  Future waitForRequestCompleted2({
+    double minWait = 0,
+    double maxWait = double.infinity,
+  }) async =>
+      _waitForCompleter(
+        requestCompleter2,
+        minWait: minWait,
+        maxWait: maxWait,
+      );
+
   Future waitForRequestCompleted1({
     double minWait = 0,
     double maxWait = double.infinity,
-  }) async {
-    final stopwatch = Stopwatch()..start();
-    while (true) {
-      await Future.delayed(Duration(milliseconds: 50));
-      final timeElapsed = stopwatch.elapsedMilliseconds;
-      final requestComplete = requestCompleter1?.isCompleted ?? false;
-      if (timeElapsed > maxWait || (requestComplete && timeElapsed > minWait)) {
-        break;
-      }
-    }
-  }
+  }) async =>
+      _waitForCompleter(
+        requestCompleter1,
+        minWait: minWait,
+        maxWait: maxWait,
+      );
 }

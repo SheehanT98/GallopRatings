@@ -36,6 +36,21 @@ class _RatingsInputWidgetState extends State<RatingsInputWidget> {
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
+  String _displayText(String? value, {String fallback = '-'}) {
+    final trimmed = value?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return fallback;
+    }
+    return trimmed;
+  }
+
+  String _displayDate(DateTime? value, {String format = 'd/M/y'}) {
+    if (value == null) {
+      return '-';
+    }
+    return dateTimeFormat(format, value);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -1544,7 +1559,7 @@ class _RatingsInputWidgetState extends State<RatingsInputWidget> {
                                                                                 AlignmentDirectional(-1.0, 0.0),
                                                                             child:
                                                                                 Text(
-                                                                              dateTimeFormat("d/M", cardTable1VarItem.noteDate!),
+                                                                              _displayDate(cardTable1VarItem.noteDate, format: 'd/M'),
                                                                               style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                     fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
                                                                                     fontSize: 10.0,
@@ -1573,7 +1588,7 @@ class _RatingsInputWidgetState extends State<RatingsInputWidget> {
                                                                               0.0),
                                                                           child:
                                                                               Text(
-                                                                            cardTable1VarItem.authorName!,
+                                                                            _displayText(cardTable1VarItem.authorName),
                                                                             style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                   fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
                                                                                   color: FlutterFlowTheme.of(context).error,
@@ -1602,7 +1617,7 @@ class _RatingsInputWidgetState extends State<RatingsInputWidget> {
                                                                               0.0),
                                                                           child:
                                                                               Text(
-                                                                            cardTable1VarItem.rating!,
+                                                                            _displayText(cardTable1VarItem.rating),
                                                                             style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                   fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
                                                                                   color: FlutterFlowTheme.of(context).error,
@@ -3151,8 +3166,7 @@ class _RatingsInputWidgetState extends State<RatingsInputWidget> {
                                                                               0.0),
                                                                           child:
                                                                               Text(
-                                                                            dateTimeFormat("d/M/y",
-                                                                                cardTable1VarItem.noteDate!),
+                                                                            _displayDate(cardTable1VarItem.noteDate),
                                                                             style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                   fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
                                                                                   letterSpacing: 0.0,
@@ -3178,7 +3192,7 @@ class _RatingsInputWidgetState extends State<RatingsInputWidget> {
                                                                               0.0),
                                                                           child:
                                                                               Text(
-                                                                            cardTable1VarItem.authorName!,
+                                                                            _displayText(cardTable1VarItem.authorName),
                                                                             style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                   fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
                                                                                   color: FlutterFlowTheme.of(context).error,
@@ -3207,7 +3221,7 @@ class _RatingsInputWidgetState extends State<RatingsInputWidget> {
                                                                               0.0),
                                                                           child:
                                                                               Text(
-                                                                            cardTable1VarItem.rating!,
+                                                                            _displayText(cardTable1VarItem.rating),
                                                                             style: FlutterFlowTheme.of(context).bodyMedium.override(
                                                                                   fontFamily: FlutterFlowTheme.of(context).bodyMediumFamily,
                                                                                   color: FlutterFlowTheme.of(context).error,

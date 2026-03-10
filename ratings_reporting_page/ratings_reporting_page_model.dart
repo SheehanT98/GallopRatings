@@ -25,7 +25,8 @@ class RatingsReportingPageModel
   }
 
   /// Additional helper methods.
-  Future waitForRequestCompleted({
+  Future _waitForCompleter(
+    Completer<dynamic>? completer, {
     double minWait = 0,
     double maxWait = double.infinity,
   }) async {
@@ -33,10 +34,20 @@ class RatingsReportingPageModel
     while (true) {
       await Future.delayed(Duration(milliseconds: 50));
       final timeElapsed = stopwatch.elapsedMilliseconds;
-      final requestComplete = requestCompleter?.isCompleted ?? false;
+      final requestComplete = completer?.isCompleted ?? false;
       if (timeElapsed > maxWait || (requestComplete && timeElapsed > minWait)) {
         break;
       }
     }
   }
+
+  Future waitForRequestCompleted({
+    double minWait = 0,
+    double maxWait = double.infinity,
+  }) async =>
+      _waitForCompleter(
+        requestCompleter,
+        minWait: minWait,
+        maxWait: maxWait,
+      );
 }
