@@ -96,7 +96,9 @@ export const RatingsEditScreen = ({ route }: Props) => {
 
         <View style={{ flex: 1, width: '100%' }}>
           <SectionCard>
-            <Text className="mb-2 text-lg font-semibold text-slate-900">Edit Rating</Text>
+            <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+              Edit Rating
+            </Text>
             <OptionChips label="Rating" options={RATING_OPTIONS} selected={rating} onSelect={setRating} />
             <View className="mt-3">
               <OptionChips
@@ -136,7 +138,9 @@ export const RatingsEditScreen = ({ route }: Props) => {
       </View>
 
       <SectionCard>
-        <Text className="mb-2 text-lg font-semibold text-slate-900">Horse History</Text>
+        <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+          Horse History
+        </Text>
         <FlatList
           data={ratingsQuery.data ?? []}
           key={isDesktop ? 'desktop-history-grid' : 'mobile-history-list'}

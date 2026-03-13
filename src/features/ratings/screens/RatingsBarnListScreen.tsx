@@ -1,6 +1,7 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React from 'react';
-import { FlatList, Pressable, Text, View } from 'react-native';
+import { FlatList, Platform, Pressable, Text, View } from 'react-native';
 
 import type { RootStackParamList } from '@/app/navigation/types';
 import { Field } from '@/components/ui/Field';
@@ -28,7 +29,9 @@ export const RatingsBarnListScreen = ({ navigation }: Props) => {
       <View style={{ flexDirection: isDesktop ? 'row' : 'column', gap: 12, alignItems: 'flex-start' }}>
         <View style={{ flex: isDesktop ? 0.9 : 1, width: '100%' }}>
           <SectionCard>
-            <Text className="mb-2 text-lg font-semibold text-slate-900">Barn List Filters</Text>
+            <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+              Barn List Filters
+            </Text>
             <OptionChips label="Cohort" options={COHORT_OPTIONS} selected={cohort} onSelect={setCohort} />
             <View className="mt-3">
               <Text className="mb-2 text-sm font-medium text-slate-700">Location</Text>
@@ -66,7 +69,9 @@ export const RatingsBarnListScreen = ({ navigation }: Props) => {
 
         <View style={{ flex: 2, width: '100%' }}>
           <SectionCard>
-            <Text className="mb-2 text-lg font-semibold text-slate-900">Barn Horses</Text>
+            <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+              Barn Horses
+            </Text>
             <FlatList
               data={horsesQuery.data ?? []}
               key={isDesktop ? 'desktop-grid' : 'mobile-list'}
@@ -78,14 +83,39 @@ export const RatingsBarnListScreen = ({ navigation }: Props) => {
               renderItem={({ item }) => (
                 <Pressable
                   onPress={() => navigation.navigate('RatingsInput', { horseId: item.id })}
-                  style={{ flex: 1 }}
-                  className="rounded-xl border border-slate-200 bg-white px-4 py-3"
+                  style={({ pressed }) => [
+                    {
+                      flex: 1,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      borderRadius: 12,
+                      backgroundColor: 'white',
+                      paddingHorizontal: 16,
+                      paddingVertical: 12,
+                      opacity: pressed ? 0.9 : 1,
+                      ...Platform.select({
+                        ios: {
+                          shadowColor: '#000',
+                          shadowOffset: { width: 0, height: 2 },
+                          shadowOpacity: 0.2,
+                          shadowRadius: 4,
+                        },
+                        android: { elevation: 2 },
+                        web: { boxShadow: '0 2px 4px rgba(0,0,0,0.2)' },
+                      }),
+                    },
+                  ]}
                 >
-                  <Text className="text-base font-semibold text-slate-900">{item.name}</Text>
-                  <Text className="text-sm text-slate-500">
-                    {item.sire} x {item.dam}
-                  </Text>
-                  <Text className="text-sm text-slate-500">{item.locationName}</Text>
+                  <View style={{ flex: 1 }}>
+                    <Text style={{ fontSize: 20, fontWeight: '600', color: '#3a55f6' }}>
+                      {item.name}
+                    </Text>
+                    <Text style={{ fontSize: 12, color: '#3A506B', marginTop: 2 }}>
+                      {item.sire} x {item.dam}
+                    </Text>
+                  </View>
+                  <MaterialIcons name="arrow-forward-ios" size={20} color="#3a55f6" />
                 </Pressable>
               )}
               ListEmptyComponent={<Text className="text-slate-500">No horses for selected filters.</Text>}
