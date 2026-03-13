@@ -17,6 +17,11 @@ module.exports = {
           800: '#2638b5',
           900: '#24348f',
         },
+        // Legacy Flutter aesthetic - slate blue for titles
+        legacy: {
+          text: '#3A4E66',
+          subtitle: '#3A506B',
+        },
       },
     },
   },

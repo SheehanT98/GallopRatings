@@ -11,7 +11,9 @@ interface HorseSummaryCardProps {
 export const HorseSummaryCard = ({ horse }: HorseSummaryCardProps) => {
   return (
     <SectionCard>
-      <Text className="text-xl font-semibold text-slate-900">{horse.name}</Text>
+      <Text className="text-xl font-semibold" style={{ color: '#3A4E66' }}>
+        {horse.name}
+      </Text>
       <Text className="mt-1 text-slate-600">
         {horse.sire} x {horse.dam}
       </Text>

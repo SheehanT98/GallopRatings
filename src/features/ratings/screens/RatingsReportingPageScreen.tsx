@@ -23,7 +23,9 @@ export const RatingsReportingPageScreen = ({ navigation }: Props) => {
   return (
     <ScreenContainer>
       <SectionCard>
-        <Text className="text-xl font-semibold text-slate-900">Generated Report</Text>
+        <Text className="text-xl font-semibold" style={{ color: '#3A4E66' }}>
+          Generated Report
+        </Text>
         <Text className="mt-2 text-slate-600">
           Review staged entries before external export or sharing.
         </Text>

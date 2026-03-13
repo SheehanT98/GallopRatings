@@ -69,7 +69,9 @@ export const RatingsInputScreen = ({ navigation, route }: Props) => {
       <View style={{ flexDirection: isDesktop ? 'row' : 'column', gap: 12, alignItems: 'flex-start' }}>
         <View style={{ flex: 1, width: '100%', gap: 12 }}>
           <SectionCard>
-            <Text className="mb-2 text-lg font-semibold text-slate-900">Horse Selection</Text>
+            <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+              Horse Selection
+            </Text>
             <Field
               label="Search horse"
               value={horseSearch}
@@ -102,7 +104,9 @@ export const RatingsInputScreen = ({ navigation, route }: Props) => {
 
         <View style={{ flex: 1, width: '100%' }}>
           <SectionCard>
-            <Text className="mb-2 text-lg font-semibold text-slate-900">New Rating</Text>
+            <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+              New Rating
+            </Text>
             <OptionChips label="Rating" options={RATING_OPTIONS} selected={rating} onSelect={setRating} />
             <View className="mt-3">
               <OptionChips
@@ -142,7 +146,9 @@ export const RatingsInputScreen = ({ navigation, route }: Props) => {
       </View>
 
       <SectionCard>
-        <Text className="mb-2 text-lg font-semibold text-slate-900">Rating History</Text>
+        <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+          Rating History
+        </Text>
         <FlatList
           data={ratingsQuery.data ?? []}
           key={isDesktop ? 'desktop-history-grid' : 'mobile-history-list'}

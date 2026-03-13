@@ -49,7 +49,9 @@ export const RatingsReportsScreen = ({ navigation }: Props) => {
       <View style={{ flexDirection: isDesktop ? 'row' : 'column', gap: 12, alignItems: 'flex-start' }}>
         <View style={{ flex: isDesktop ? 2 : 1, width: '100%', gap: 12 }}>
           <SectionCard>
-            <Text className="mb-2 text-lg font-semibold text-slate-900">Filters</Text>
+            <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+              Filters
+            </Text>
             <Field
               label="Horse name"
               value={horseName}
@@ -75,7 +77,9 @@ export const RatingsReportsScreen = ({ navigation }: Props) => {
           </SectionCard>
 
           <SectionCard>
-            <Text className="mb-2 text-lg font-semibold text-slate-900">Ratings Results</Text>
+            <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+              Ratings Results
+            </Text>
             <FlatList
               data={ratingsQuery.data ?? []}
               keyExtractor={(item) => item.id}
@@ -100,7 +104,9 @@ export const RatingsReportsScreen = ({ navigation }: Props) => {
 
         <View style={{ flex: isDesktop ? 1.2 : 1, width: '100%' }}>
           <SectionCard>
-            <Text className="mb-2 text-lg font-semibold text-slate-900">Staged Report Items</Text>
+            <Text className="mb-2 text-lg font-semibold" style={{ color: '#3A4E66' }}>
+              Staged Report Items
+            </Text>
             <FlatList
               data={stagedQuery.data ?? []}
               key={isDesktop ? 'desktop-staged-grid' : 'mobile-staged-list'}

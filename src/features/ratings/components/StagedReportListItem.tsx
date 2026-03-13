@@ -14,7 +14,9 @@ export const StagedReportListItem = ({ item, onRemove }: StagedReportListItemPro
   return (
     <SectionCard>
       <View className="flex-row items-center justify-between">
-        <Text className="text-base font-semibold text-slate-900">{item.horseName}</Text>
+        <Text className="text-base font-semibold" style={{ color: '#3A4E66' }}>
+          {item.horseName}
+        </Text>
         <Text className="text-sm font-semibold text-brand-700">{item.rating}</Text>
       </View>
       <Text className="mt-1 text-sm text-slate-500">{item.authorName}</Text>
