@@ -46,6 +46,10 @@ src/
    - Centered constrained content widths for web/desktop
    - Desktop two-column layouts for major screens while preserving mobile-first flow
 
+## Theme
+
+The app is configured for **light mode only** (`app.json` → `userInterfaceStyle: "light"`). Dark mode support is preserved: to re-enable it, change `userInterfaceStyle` to `"automatic"` so the app follows the system appearance.
+
 ## Migrated flows
 
 - Ratings Home
